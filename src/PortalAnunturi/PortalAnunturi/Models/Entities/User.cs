@@ -7,7 +7,7 @@ namespace PortalAnunturi.Models.Entities
     {
         public User()
         {
-            Anunt = new HashSet<Anunt>();
+            Anouncement = new HashSet<Anouncement>();
         }
 
         public int IdUser { get; set; }
@@ -17,6 +17,6 @@ namespace PortalAnunturi.Models.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public ICollection<Anunt> Anunt { get; set; }
+        public ICollection<Anouncement> Anouncement { get; set; }
     }
 }

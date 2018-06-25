@@ -5,18 +5,18 @@ using PortalAnunturi.Models.Entities;
 
 namespace PortalAnunturi.Models
 {
-    public partial class AnunturiDbContext : DbContext
+    public partial class AnouncementsDbContext : DbContext
     {
-        public AnunturiDbContext()
+        public AnouncementsDbContext()
         {
         }
 
-        public AnunturiDbContext(DbContextOptions<AnunturiDbContext> options)
+        public AnouncementsDbContext(DbContextOptions<AnouncementsDbContext> options)
             : base(options)
         {
         }
 
-        public virtual DbSet<Anunt> Anunt { get; set; }
+        public virtual DbSet<Anouncement> Anouncement { get; set; }
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<User> User { get; set; }
 
@@ -25,49 +25,47 @@ namespace PortalAnunturi.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=AnunturiDb;Trusted_Connection=True");
+                optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=AnouncementsDb;Trusted_Connection=True;MultipleActiveResultSets=true");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Anunt>(entity =>
+            modelBuilder.Entity<Anouncement>(entity =>
             {
-                entity.HasKey(e => e.IdAnunt);
+                entity.HasKey(e => e.IdAnouncement);
 
-                entity.Property(e => e.IdAnunt).HasColumnName("Id_Anunt");
+                entity.HasIndex(e => e.Category)
+                    .HasName("IX_Anunt_Id_Category");
 
-                entity.Property(e => e.DataCreare)
-                    .HasColumnName("Data_Creare")
-                    .HasColumnType("date");
+                entity.HasIndex(e => e.User)
+                    .HasName("IX_Anunt_Id_User");
 
-                entity.Property(e => e.DataExpirare)
-                    .HasColumnName("Data_Expirare")
-                    .HasColumnType("date");
+                entity.Property(e => e.IdAnouncement).HasColumnName("Id_Anouncement");
 
-                entity.Property(e => e.Descriere)
+                entity.Property(e => e.CreationDate).HasColumnType("date");
+
+                entity.Property(e => e.Description)
                     .HasMaxLength(1000)
                     .IsUnicode(false);
 
-                entity.Property(e => e.IdCategory).HasColumnName("Id_Category");
+                entity.Property(e => e.ExpirationDate).HasColumnType("date");
 
-                entity.Property(e => e.IdUser).HasColumnName("Id_User");
-
-                entity.Property(e => e.Titlu)
+                entity.Property(e => e.Title)
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
-                entity.HasOne(d => d.IdCategoryNavigation)
-                    .WithMany(p => p.Anunt)
-                    .HasForeignKey(d => d.IdCategory)
+                entity.HasOne(d => d.CategoryNavigation)
+                    .WithMany(p => p.Anouncement)
+                    .HasForeignKey(d => d.Category)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Anunt_Category");
+                    .HasConstraintName("FK_Anouncement_Category");
 
-                entity.HasOne(d => d.IdUserNavigation)
-                    .WithMany(p => p.Anunt)
-                    .HasForeignKey(d => d.IdUser)
+                entity.HasOne(d => d.UserNavigation)
+                    .WithMany(p => p.Anouncement)
+                    .HasForeignKey(d => d.User)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Anunt_User");
+                    .HasConstraintName("FK_Anouncement_User");
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -76,7 +74,7 @@ namespace PortalAnunturi.Models
 
                 entity.Property(e => e.IdCategory).HasColumnName("Id_Category");
 
-                entity.Property(e => e.CategoryName)
+                entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .IsUnicode(false);
             });

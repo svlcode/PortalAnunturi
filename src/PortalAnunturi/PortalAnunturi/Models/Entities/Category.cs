@@ -7,12 +7,12 @@ namespace PortalAnunturi.Models.Entities
     {
         public Category()
         {
-            Anunt = new HashSet<Anunt>();
+            Anouncement = new HashSet<Anouncement>();
         }
 
         public int IdCategory { get; set; }
-        public string CategoryName { get; set; }
+        public string Name { get; set; }
 
-        public ICollection<Anunt> Anunt { get; set; }
+        public ICollection<Anouncement> Anouncement { get; set; }
     }
 }
